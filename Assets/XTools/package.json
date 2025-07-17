@@ -1,0 +1,17 @@
+{
+  "name": "com.xidr.xtools", 
+  "version": "1.0.0",
+  "displayName": "XTools",
+  "description": "A set of tools to bootstrap my projects creation",
+  "unity": "6000.0",
+
+  "dependencies": {
+    "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy"
+  },
+
+  "author": {
+    "name": "Xid",
+    "email": "stormingisle@proton.me",
+    "url": "https://xidriel.me/"
+  }
+}

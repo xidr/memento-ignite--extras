@@ -1,0 +1,17 @@
+{
+    "name": "XTools",
+    "rootNamespace": "XTools",
+    "references": [
+        "GUID:88be65f96b86746888c927a5c8ff3534",
+        "GUID:1530a967b84cfb44dbdd5e8a1989764f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
