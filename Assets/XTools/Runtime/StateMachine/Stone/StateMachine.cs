@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace XTools {
+namespace XTools.SM.Stone {
     public class StateMachine : MonoBehaviour {
         [SerializeField] Transform _statesRoot;
         

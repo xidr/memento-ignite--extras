@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace XTools {
+namespace XTools.SM.Stone {
     public abstract class SceneState<TContextType> : State<TContextType> where TContextType : MonoBehaviour {
         [SerializeField] protected List<GameObject> _views;
 

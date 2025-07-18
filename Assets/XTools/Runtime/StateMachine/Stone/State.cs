@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace XTools {
+namespace XTools.SM.Stone {
     public interface IState {
         public event Action<Type> OnTransitionRequired;
 

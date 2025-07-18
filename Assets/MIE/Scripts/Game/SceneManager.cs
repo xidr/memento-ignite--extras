@@ -4,12 +4,10 @@ using Alchemy.Serialization;
 using UnityEngine;
 using XTools;
 using static XTools.XToolsEvents;
+using XTools.SM.Iron;
 
 namespace MIE.Game {
     public class SceneManager : MonoBehaviour {
-        // [AlchemySerializeField, NonSerialized]
-        // public Dictionary<SceneStateBase, GameObject> dictionary = new();
-
         [SerializeReference] public List<SceneStateBase> states = new();
 
         StateMachine _stateMachine;
@@ -29,12 +27,9 @@ namespace MIE.Game {
             var mainViewState = states.Find(v => v is MainViewState) as MainViewState;
             var settingsState = states.Find(v => v is SettingsState) as SettingsState;
 
-            // _UIButtonPressedBinding = new EventBinding<UIButtonPressed>(OnUIButtonPressed);
-            //
-            //
             At(mainViewState, settingsState,
                 new ActionPredicateCompare<UIButtonTypes>(ref XToolsEvents.UIButtonPressed, UIButtonTypes.Settings));
-            
+
             _stateMachine.SetState(mainViewState);
         }
 

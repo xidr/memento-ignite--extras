@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MIE {
+namespace XTools.SM.Iron {
     public class StateMachine {
         StateNode currentNode;
         readonly Dictionary<Type, StateNode> nodes = new();

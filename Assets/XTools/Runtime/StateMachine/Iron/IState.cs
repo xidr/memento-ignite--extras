@@ -1,4 +1,4 @@
-namespace MIE {
+namespace XTools.SM.Iron {
     public interface IState {
         void OnEnter() {
         }
