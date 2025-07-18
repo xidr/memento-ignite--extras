@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MIE/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/MIE/Scenes/Core.unity
+    guid: 1f79b3d180b20bd7e9cb0a0288c55f3d
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 49713b5960640fe099e14f16f0759746, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

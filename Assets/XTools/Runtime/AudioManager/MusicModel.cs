@@ -48,7 +48,7 @@ namespace XTools {
             _current.bypassListenerEffects = true;
             _current.Play();
 
-            CoroutineCenter.Instance.StartCoroutine(HandleCrossFadeExo());
+            GameLoopCenter.Instance.StartCoroutine(HandleCrossFadeExo());
         }
 
         void CorrectSources() {
