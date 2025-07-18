@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace XTools {
     [RequireComponent(typeof(Button))]
     public class UIViewButton : MonoBehaviour {
-        [SerializeField] UIButtonPressed.UIButtons _buttonType;
+        [SerializeField] XToolsEvents.UIButtonTypes _buttonType;
         Button _buttonReference;
 
         void Awake() {
@@ -21,9 +21,11 @@ namespace XTools {
         }
 
         void RaiseUIButtonEvent() {
-            EventBus<UIButtonPressed>.Raise(new UIButtonPressed {
-                buttonType = _buttonType,
-            });
+            // EventBus<UIButtonPressed>.Raise(new UIButtonPressed {
+            //     buttonType = _buttonType,
+            // });
+            
+            XToolsEvents.UIButtonPressed.Invoke(_buttonType);
         }
     }
 }
