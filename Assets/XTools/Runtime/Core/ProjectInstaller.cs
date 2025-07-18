@@ -6,6 +6,7 @@ namespace XTools {
         public virtual void InstallBindings(ContainerBuilder builder)
         {
             builder.AddSingleton(new AudioManager(), typeof(AudioManager));
+            builder.AddSingleton(new SceneLoader(), typeof(SceneLoader));
         }
     }
 }

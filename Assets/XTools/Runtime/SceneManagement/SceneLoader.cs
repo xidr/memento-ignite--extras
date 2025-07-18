@@ -6,24 +6,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace XTools {
-    public class SceneLoader : MonoBehaviour {
+    public class SceneLoader {
         internal const string CORE_SCENE_NAME = "Core";
+
+        SceneLoaderV _view;
         
-        [SerializeField] SceneLoaderV _view;
-        [SerializeField] string _initialSceneName = "MainMenu";
-        internal string initialSceneName => _initialSceneName;
         readonly SceneLoaderM _model = new();
 
         bool _isLoading;
 
-        void Awake() {
-            ServiceLocator.Global.Register<SceneLoader>(this);
-        }
 
+        internal void Initialize(SceneLoaderV view) {
+            _view = view;
+        }
+        
         public void TryLoadScene(string sceneName, bool withAnims = false) {
             if (_isLoading) return;
 
-            StartCoroutine(LoadSceneAsync(sceneName, withAnims));
+            GameLoopCenter.Instance.StartCoroutine(LoadSceneAsync(sceneName, withAnims));
         }
 
         IEnumerator LoadSceneAsync(string sceneName, bool withAnims = false) {
@@ -36,7 +36,7 @@ namespace XTools {
 
             _view.cameraRef.SetActive(true);
             
-            StartCoroutine(_model.LoadScene(sceneName));
+            GameLoopCenter.Instance.StartCoroutine(_model.LoadScene(sceneName));
 
             // yield return modelCor;
             yield return new WaitUntil(() => !_model.inProgress);

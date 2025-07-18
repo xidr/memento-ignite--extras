@@ -20,7 +20,7 @@ namespace XTools {
         //     ServiceLocator.Global.Register(this);
         // }
 
-        public void Initialize(InitData initData) {
+        internal void Initialize(InitData initData) {
             if (_initialized) return;
 
             _mixer = initData.mixer;

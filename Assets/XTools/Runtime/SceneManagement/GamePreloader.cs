@@ -1,11 +1,15 @@
 using System;
+using Reflex.Attributes;
 using UnityEngine;
 
 namespace XTools {
     public class GamePreloader : MonoBehaviour {
+        [SerializeField] string _initialSceneName = "MainMenu";
+        
+        [Inject] SceneLoader _sceneLoader;
+        
         void Start() {
-            ServiceLocator.For(this).Get(out SceneLoader sceneLoader);
-            sceneLoader.TryLoadScene(sceneLoader.initialSceneName);
+            _sceneLoader.TryLoadScene(_initialSceneName);
         }
     }
 }

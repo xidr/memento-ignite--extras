@@ -4,8 +4,10 @@ using System.Linq;
 using UnityEngine;
 
 namespace XTools {
-    public abstract class DataManagerBase {
+    public abstract class DataManagerBase : IDisposable {
         List<ScriptableObject> _data = new();
+
+        EventBinding<UIAudioSliderChanged> _uiAudioSliderChangedBinding;
 
         public DataManagerBase() {
             ScriptableObject[] loaded = Resources.LoadAll<ScriptableObject>("GameData");
@@ -14,9 +16,16 @@ namespace XTools {
 
             // ServiceLocator.Global.Register(typeof(IVisitorDataSupplier), this);
 
-            var uiAudioSliderChangedBinding = new EventBinding<UIAudioSliderChanged>(UiAudioSliderChanged);
-            EventBus<UIAudioSliderChanged>.Register(uiAudioSliderChangedBinding);
-            // TODO: Should I unsubscribe?
+            _uiAudioSliderChangedBinding = new EventBinding<UIAudioSliderChanged>(UiAudioSliderChanged);
+            EventBus<UIAudioSliderChanged>.Register(_uiAudioSliderChangedBinding);
+        }
+
+        public void Initialize() {
+            GameLoopCenter.Instance.SubscribeForDispose(this);
+        }
+
+        public void Dispose() {
+            EventBus<UIAudioSliderChanged>.Deregister(_uiAudioSliderChangedBinding);
         }
 
         public virtual T GetData<T>() where T : ScriptableObject {
