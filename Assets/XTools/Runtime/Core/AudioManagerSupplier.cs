@@ -20,6 +20,8 @@ namespace XTools {
                 musicSources = _musicSources,
                 soundModel = _soundModel
             });
+            
+            Debug.Log("dfgfgd");
         }
     }
 }

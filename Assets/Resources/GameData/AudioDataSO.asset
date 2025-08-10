@@ -12,12 +12,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7702d505324a9782aaf458c307a81f, type: 3}
   m_Name: AudioDataSO
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: music
+      Entry: 7
+      Data: 0|XTools.MusicData, XTools
+    - Name: bundles
+      Entry: 7
+      Data: 1|System.Collections.Generic.Dictionary`2[[XTools.MusicBundleType, XTools],[XTools.MusicBundle,
+        XTools]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 2|System.Collections.Generic.EnumEqualityComparer`1[[XTools.MusicBundleType,
+        XTools]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 7
+      Data: 3|XTools.MusicBundle, XTools
+    - Name: audioClips
+      Entry: 7
+      Data: 4|System.Collections.Generic.List`1[[UnityEngine.AudioClip, UnityEngine.AudioModule]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: shouldLoopFirstClip
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: crossFadeTime
+      Entry: 4
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
   musicVolume: 0.8
   sfxVolume: 0.8
-  __alchemySerializationData_XTools_AudioDataSO:
-    music:
-      isCreated: 1
-      data: "{\n    \"crossFadeTime\": 2,\n    \"__alchemySerializationData_XTools_MusicData\":
-        {\n        \"bundles\": {\n            \"isCreated\": false,\n           
-        \"data\": null\n        },\n        \"unityObjectReferences\": []\n    }\n}"
-    unityObjectReferences: []

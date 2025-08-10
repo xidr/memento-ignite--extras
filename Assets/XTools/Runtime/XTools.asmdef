@@ -2,8 +2,9 @@
     "name": "XTools",
     "rootNamespace": "XTools",
     "references": [
-        "GUID:88be65f96b86746888c927a5c8ff3534",
-        "GUID:1530a967b84cfb44dbdd5e8a1989764f"
+        "GUID:1530a967b84cfb44dbdd5e8a1989764f",
+        "GUID:3b4d8e09c665bfa47849130d8695171e",
+        "GUID:ad968d605628d06499b62cdc30f11cf8"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
