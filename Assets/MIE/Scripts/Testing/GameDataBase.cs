@@ -6,5 +6,7 @@ namespace MIE {
     public abstract class GameDataBase : ScriptableObject {
         // public Type type {get; private set;}
         
+        
+        
     }
 }
