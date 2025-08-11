@@ -19,7 +19,6 @@ namespace MIE {
         [MinMaxSlider(0, 450, true)]
         Vector2 _range2 = new Vector2(0, 450);
         
-        [OnValueChanged()]
         [SerializeField]
         [MinMaxSlider("@_range2.y", 450, true)]
         Vector2 _range3 = new Vector2(0, 450);
