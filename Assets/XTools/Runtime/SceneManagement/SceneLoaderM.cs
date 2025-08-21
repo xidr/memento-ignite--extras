@@ -30,7 +30,7 @@ namespace XTools {
             GC.Collect();
             yield return Resources.UnloadUnusedAssets();
 
-            Scene scenee;
+            // Scene scenee;
             yield return SceneManager.LoadSceneAsync(sceneNameToLoad, LoadSceneMode.Additive);
 
             

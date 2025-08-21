@@ -21,7 +21,13 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  WithFields: {x: -7.3856206, y: 5.1633987}
-  _range1: {x: 0, y: 66.8}
-  _range2: {x: 70.58824, y: 209.30693}
-  _range3: {x: 308.3126, y: 450}
+  _difficulties:
+  - minMaxValueSlider: {x: 0, y: 56.85841}
+    wasChanged: 0
+  - minMaxValueSlider: {x: 56.85841, y: 100}
+    wasChanged: 0
+  - minMaxValueSlider: {x: 100, y: 100}
+    wasChanged: 0
+  - minMaxValueSlider: {x: 100, y: 100}
+    wasChanged: 0
+  listCount: 7
