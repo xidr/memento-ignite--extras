@@ -1,16 +1,38 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using UnityEngine;
 
 namespace XTools.SM.Silver {
-    [Serializable]
-    public abstract class State {
-        [ShowInInspector, ReadOnly] public readonly State parent;
+    public interface IState {
+        IState parent { get; } 
+        IState activeChild { get; set; } 
+        public IReadOnlyList<IActivity> activities { get; }
 
-        [ShowInInspector, ReadOnly] readonly StateMachine machine;
-        State activeChild;
+        void Enter();
+        void Exit();
+        void Update(float deltaTime);
+    }
+    
+    [Serializable]
+    public abstract class State<TContext, TTarget> : IState{
+        
+
+        
+        
+        public IState activeChild { get; set; }
+        
+        [ShowInInspector, ReadOnly] readonly State<TContext, TTarget> _parent;
+        public IState parent => _parent;
+        [ShowInInspector, ReadOnly] readonly StateMachine _machine;
         readonly List<IActivity> _activities = new();
         public IReadOnlyList<IActivity> activities => _activities;
+        [OdinSerialize] List<TTarget> children = new();
+        [ValueDropdown("GetObjectOptions")]
+        TTarget _initialState;
+        
 
         // public State(StateMachine machine, State parent = null) {
         //     this.machine = machine;
@@ -21,10 +43,10 @@ namespace XTools.SM.Silver {
             if (a != null) _activities.Add(a);
         }
 
-        protected virtual State GetInitialState() =>
+        protected virtual State<TContext, TTarget> GetInitialState() =>
             null; // Initial child to enter when this state starts (null = this is the leaf)
 
-        protected virtual State GetTransition() =>
+        protected virtual State<TContext, TTarget> GetTransition() =>
             null; // Target state to switch to this frame (null = stay in the current state)
 
         // Lifecycle hooks
@@ -32,23 +54,23 @@ namespace XTools.SM.Silver {
         protected virtual void OnExit() { }
         protected virtual void OnUpdate(float deltaTime) { }
 
-        internal void Enter() {
-            if (parent != null) parent.activeChild = this;
+        public void Enter() {
+            if (_parent != null) _parent.activeChild = this;
             OnEnter();
             var init = GetInitialState();
             if (init != null) init.Enter();
         }
 
-        internal void Exit() {
+        public void Exit() {
             if (activeChild != null) activeChild.Exit();
             activeChild = null;
             OnExit();
         }
 
-        internal void Update(float deltaTime) {
+        public void Update(float deltaTime) {
             var t = GetTransition();
             if (t != null) {
-                machine.sequencer.RequestTransition(this, t);
+                _machine.sequencer.RequestTransition(this, t);
                 return;
             }
 
@@ -57,15 +79,23 @@ namespace XTools.SM.Silver {
         }
 
         // Returns the deepest currently-active descendant state (the leaf of the active path)
-        public State Leaf() {
-            var s = this;
+        public IState Leaf() {
+            IState s = this;
             while (s.activeChild != null) s = s.activeChild;
             return s;
         }
 
         // Yields this state and then each ancestor up to the root (self -> parent -> ... -> root)
-        public IEnumerable<State> PathToRoot() {
-            for (var s = this; s != null; s = s.parent) yield return s;
+        public IEnumerable<IState> PathToRoot() {
+            for (var s = this; s != null; s = s._parent) yield return s;
+        }
+        
+        
+        IEnumerable<ValueDropdownItem<TTarget>> GetObjectOptions()
+        {
+            return children
+                .Where(obj => obj != null)
+                .Select(obj => new ValueDropdownItem<TTarget>(obj.ToString(), obj));
         }
     }
 }

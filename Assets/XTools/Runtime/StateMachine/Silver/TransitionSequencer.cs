@@ -8,15 +8,15 @@ namespace XTools.SM.Silver {
 
         ISequence _sequencer; // current phase (deactivate or activate)
         Action _nextPhase; // switch structure between phases
-        (State from, State to)? _pending; // coalesce a single pending request
-        State _lastFrom, _lastTo;
+        (IState from, IState to)? _pending; // coalesce a single pending request
+        IState _lastFrom, _lastTo;
 
         public TransitionSequencer(StateMachine machine) {
             this.machine = machine;
         }
 
-        // Request a transition from one state to another
-        public void RequestTransition(State from, State to) {
+        // Request a transition from one IState to another
+        public void RequestTransition(IState from, IState to) {
             // machine.ChangeState(from, to);
             if (to == null || from == null) return;
             if (_sequencer != null) {
@@ -27,7 +27,7 @@ namespace XTools.SM.Silver {
             BeginTransition(from, to);
         }
 
-        static List<PhaseStep> GatherPhaseSteps(List<State> chain, bool deactivate) {
+        static List<PhaseStep> GatherPhaseSteps(List<IState> chain, bool deactivate) {
             var steps = new List<PhaseStep>();
 
             for (var i = 0; i < chain.Count; i++) {
@@ -49,24 +49,24 @@ namespace XTools.SM.Silver {
         }
 
         // States to exit: from -> ... up to (but excluding) lca; bottom -> up order
-        static List<State> StatesToExit(State from, State lca) {
-            var list = new List<State>();
+        static List<IState> StatesToExit(IState from, IState lca) {
+            var list = new List<IState>();
             for (var s = from; s != null && s != lca; s = s.parent) list.Add(s);
             return list;
         }
 
         // States to enter: path from 'to' up to (but excluding) lca; returned in enter order (top -> down)
-        static List<State> StatesToEnter(State to, State lca) {
+        static List<IState> StatesToEnter(IState to, IState lca) {
             // Use stack to then have correct top-down order
-            var stack = new Stack<State>();
+            var stack = new Stack<IState>();
             for (var s = to; s != null && s != lca; s = s.parent) stack.Push(s);
-            return new List<State>(stack);
+            return new List<IState>(stack);
         }
 
         CancellationTokenSource _cts;
         public readonly bool useSequential = true;
 
-        void BeginTransition(State from, State to) {
+        void BeginTransition(IState from, IState to) {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
             var lca = Lca(from, to);
@@ -82,7 +82,7 @@ namespace XTools.SM.Silver {
             _sequencer.Start();
 
             _nextPhase = () => {
-                // 2. Change state
+                // 2. Change IState
                 machine.ChangeState(from, to);
                 // 3. Activate the "new branch"
                 var enterSteps = GatherPhaseSteps(enterChain, false);
@@ -123,9 +123,9 @@ namespace XTools.SM.Silver {
         }
 
         // Compute the Lowest Common Ancestor of two states
-        public static State Lca(State a, State b) {
+        public static IState Lca(IState a, IState b) {
             // Create a set of all the parents of 'a'
-            var ap = new HashSet<State>();
+            var ap = new HashSet<IState>();
             for (var s = a; s != null; s = s.parent) ap.Add(s);
             // Find the first parent of 'b' that is also a parent of 'a'
             for (var s = b; s != null; s = s.parent)
