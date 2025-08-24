@@ -7,9 +7,10 @@ namespace XTools {
         public enum UIButtonTypes {
             Back,
             Pause,
-            LoadMainMenu,
-            LoadGameplay,
-            Settings
+            Settings,
+            HowToPlay,
+            ToMainMenu,
+            ToGameplay,
         }
         
     }

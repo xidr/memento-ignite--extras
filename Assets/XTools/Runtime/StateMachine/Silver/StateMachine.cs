@@ -14,11 +14,11 @@ namespace XTools.SM.Silver {
         bool _started;
 
 
-        void Start() {
-            StartSM();
-        }
+        // void Start() {
+        //     StartSM();
+        // }
 
-        public void StartSM() {
+        void StartSM() {
             if (_started) return;
 
             sequencer = new TransitionSequencer(this);
