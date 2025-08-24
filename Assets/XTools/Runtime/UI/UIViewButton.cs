@@ -1,11 +1,19 @@
 using System;
+using Reflex.Attributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace XTools {
     [RequireComponent(typeof(Button))]
     public class UIViewButton : MonoBehaviour {
         [SerializeField] XToolsEvents.UIButtonTypes _buttonType;
+        [SerializeField] bool _hasSounds;
+        [SerializeField, ShowIf("_hasSounds")] SoundData _onHoverSoundData;
+        [SerializeField, ShowIf("_hasSounds")] SoundData _onClickSoundData;
+        
+        [Inject] AudioManager _audioManager;
         Button _buttonReference;
 
         void Awake() {
@@ -21,11 +29,11 @@ namespace XTools {
         }
 
         void RaiseUIButtonEvent() {
-            // EventBus<UIButtonPressed>.Raise(new UIButtonPressed {
-            //     buttonType = _buttonType,
-            // });
-            
             XToolsEvents.UIButtonPressed.Invoke(_buttonType);
+        }
+        
+        public void OnPointerEnter(PointerEventData eventData) {
+            if (_hasSounds) _audioManager.PlaySound(_onHoverSoundData);
         }
     }
 }

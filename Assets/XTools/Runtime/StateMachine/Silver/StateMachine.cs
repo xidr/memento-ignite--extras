@@ -9,7 +9,7 @@ namespace XTools.SM.Silver {
     public class StateMachine : SerializedMonoBehaviour {
         public TransitionSequencer sequencer { get; private set; }
 
-        [NonSerialized] [OdinSerialize] IState _root;
+        [NonSerialized, OdinSerialize] IRootState _root;
 
         bool _started;
 

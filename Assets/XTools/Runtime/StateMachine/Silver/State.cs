@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace XTools.SM.Silver {
     public interface IState {
-        IState parent { get; } 
-        IState activeChild { get; set; } 
+        IState parent { get; }
+        IState activeChild { get; set; }
         public IReadOnlyList<IActivity> activities { get; }
 
         void Enter();
@@ -16,26 +16,37 @@ namespace XTools.SM.Silver {
         void Update(float deltaTime);
         List<IState> GetChildren();
     }
-    
-    [Serializable]
-    public abstract class State<TContext, TTarget> : IState where TTarget : IState{
-        
-        public IState activeChild { get; set; }
-        
 
-        
+    public interface IRootState : IState { }
+
+    [Serializable]
+    public abstract class State<TContext, TTarget> : IState where TTarget : IState {
+        public IState activeChild { get; set; }
+
+        [FoldoutGroup("Base")]
+        // [HorizontalGroup("Base/Split", width: 0.25f)]
+        [TabGroup("Base/Tabs", "Other")]
+        [VerticalGroup("Base/Tabs/Other/Vertical")]
+        [BoxGroup("Base/Tabs/Other/Vertical/Info")]
         [ShowInInspector, ReadOnly] readonly State<TContext, TTarget> _parent;
         public IState parent => _parent;
+        [BoxGroup("Base/Tabs/Other/Vertical/Info")]
         [ShowInInspector, ReadOnly] readonly StateMachine _machine;
+        [BoxGroup("Base/Tabs/Other/Vertical/Settings")]
+        [OdinSerialize] [ValueDropdown("GetObjectOptions")]
+        TTarget _initialState;
         readonly List<IActivity> _activities = new();
         public IReadOnlyList<IActivity> activities => _activities;
-        
-        [OdinSerialize, OnValueChanged("SetTransitionsParent")]
+        // [VerticalGroup("Base/Split/Selection")]
+        [TabGroup("Base/Tabs", "Transitions")]
+        [OdinSerialize] [OnValueChanged("SetTransitionsParent")]
         HashSet<Transition> transitions = new();
+        // [VerticalGroup("Base/Split/Selection")]
+        [TabGroup("Base/Tabs", "Children")]
         [OdinSerialize] List<TTarget> children = new();
-        [OdinSerialize, ValueDropdown("GetObjectOptions")]
-        TTarget _initialState;
         
+
+
 
         // public State(StateMachine machine, State parent = null) {
         //     this.machine = machine;
@@ -54,9 +65,9 @@ namespace XTools.SM.Silver {
             //     if (transition.Evaluate())
             //         return transition;
 
-            foreach (var transition in transitions) {
-                if (transition.Evaluate()) return transition;
-            }
+            foreach (var transition in transitions)
+                if (transition.Evaluate())
+                    return transition;
 
             return null;
         } // Target state to switch to this frame (null = stay in the current state)
@@ -92,9 +103,9 @@ namespace XTools.SM.Silver {
 
         public List<IState> GetChildren() {
             List<IState> trueChildren = new();
-            foreach (var child in children) {
-                if (child != null) trueChildren.Add(child);
-            }
+            foreach (var child in children)
+                if (child != null)
+                    trueChildren.Add(child);
             return trueChildren;
         }
 
@@ -109,10 +120,9 @@ namespace XTools.SM.Silver {
         public IEnumerable<IState> PathToRoot() {
             for (var s = this; s != null; s = s._parent) yield return s;
         }
-        
-        
-        IEnumerable<ValueDropdownItem<TTarget>> GetObjectOptions()
-        {
+
+
+        IEnumerable<ValueDropdownItem<TTarget>> GetObjectOptions() {
             return children
                 .Where(obj => obj != null)
                 .Select(obj => new ValueDropdownItem<TTarget>(obj.ToString(), obj));
@@ -120,9 +130,7 @@ namespace XTools.SM.Silver {
 
         void SetTransitionsParent() {
             Debug.Log(GetChildren());
-            foreach (var transition in transitions) {
-                transition.SetParent(this);
-            }
+            foreach (var transition in transitions) transition.SetParent(this);
         }
     }
 }
