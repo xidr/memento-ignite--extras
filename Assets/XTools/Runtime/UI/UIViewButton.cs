@@ -1,4 +1,3 @@
-using System;
 using Reflex.Attributes;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,9 +9,13 @@ namespace XTools {
     public class UIViewButton : MonoBehaviour {
         [SerializeField] XToolsEvents.UIButtonTypes _buttonType;
         [SerializeField] bool _hasSounds;
-        [SerializeField, ShowIf("_hasSounds")] SoundData _onHoverSoundData;
-        [SerializeField, ShowIf("_hasSounds")] SoundData _onClickSoundData;
-        
+
+        [SerializeField] [ShowIf("_hasSounds")]
+        SoundData _onHoverSoundData;
+
+        [SerializeField] [ShowIf("_hasSounds")]
+        SoundData _onClickSoundData;
+
         [Inject] AudioManager _audioManager;
         Button _buttonReference;
 
@@ -23,7 +26,7 @@ namespace XTools {
         void OnEnable() {
             _buttonReference.onClick.AddListener(RaiseUIButtonEvent);
         }
-        
+
         void OnDisable() {
             _buttonReference.onClick.RemoveListener(RaiseUIButtonEvent);
         }
@@ -31,7 +34,7 @@ namespace XTools {
         void RaiseUIButtonEvent() {
             XToolsEvents.UIButtonPressed.Invoke(_buttonType);
         }
-        
+
         public void OnPointerEnter(PointerEventData eventData) {
             if (_hasSounds) _audioManager.PlaySound(_onHoverSoundData);
         }

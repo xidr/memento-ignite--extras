@@ -22,7 +22,8 @@ namespace XTools.SM.Silver {
             if (_started) return;
 
             sequencer = new TransitionSequencer(this);
-            Wire(_root, this, new HashSet<IState>());
+            // Wire(_root, this, new HashSet<IState>());
+            _root.SetupRecursively(this);
             _started = true;
             _root.Enter();
         }
@@ -51,44 +52,44 @@ namespace XTools.SM.Silver {
             while (stack.Count > 0) stack.Pop().Enter();
         }
 
-        void Wire(IState s, StateMachine m, HashSet<IState> visited, IState parent = null) {
-            if (s == null) return;
-            if (!visited.Add(s)) return; // State is already visited
+        // void Wire(IState s, StateMachine m, HashSet<IState> visited, IState parent = null) {
+        //     if (s == null) return;
+        //     if (!visited.Add(s)) return; // State is already visited
+        //
+        //     var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
+        //                 BindingFlags.FlattenHierarchy;
+        //     var machineField = typeof(IState).GetField("_machine", flags);
+        //     if (machineField != null) machineField.SetValue(s, m);
+        //
+        //     foreach (var fld in s.GetType().GetFields(flags)) {
+        //         if (typeof(IState).IsAssignableFrom(fld.FieldType))
+        //             // Only consider fields that are State
+        //             if (fld.Name == "_parent") {
+        //                 if (parent != null) fld.SetValue(s, parent);
+        //                 continue; // Skip back-edge to parent
+        //             }
+        //
+        //
+        //         // Check if field is a collection of States
+        //         if (IsStateList(fld.FieldType)) {
+        //             var stateType = fld.FieldType.GetGenericArguments()[0];
+        //             // Debug.Log($"Found List<{stateType.Name}>");
+        //
+        //             var list = fld.GetValue(s);
+        //             // Cast to IEnumerable to iterate
+        //             if (list is IEnumerable enumerable)
+        //                 foreach (var item in enumerable)
+        //                     if (item is IState state)
+        //                         Wire(state, m, visited, s); // Recurse into the child
+        //         }
+        //     }
+        // }
 
-            var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
-                        BindingFlags.FlattenHierarchy;
-            var machineField = typeof(IState).GetField("_machine", flags);
-            if (machineField != null) machineField.SetValue(s, m);
-
-            foreach (var fld in s.GetType().GetFields(flags)) {
-                if (typeof(IState).IsAssignableFrom(fld.FieldType))
-                    // Only consider fields that are State
-                    if (fld.Name == "_parent") {
-                        if (parent != null) fld.SetValue(s, parent);
-                        continue; // Skip back-edge to parent
-                    }
-
-
-                // Check if field is a collection of States
-                if (IsStateList(fld.FieldType)) {
-                    var stateType = fld.FieldType.GetGenericArguments()[0];
-                    // Debug.Log($"Found List<{stateType.Name}>");
-
-                    var list = fld.GetValue(s);
-                    // Cast to IEnumerable to iterate
-                    if (list is IEnumerable enumerable)
-                        foreach (var item in enumerable)
-                            if (item is IState state)
-                                Wire(state, m, visited, s); // Recurse into the child
-                }
-            }
-        }
-
-        static bool IsStateList(Type type) {
-            if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(List<>)) return false;
-
-            var elementType = type.GetGenericArguments()[0];
-            return typeof(IState).IsAssignableFrom(elementType);
-        }
+        // static bool IsStateList(Type type) {
+        //     if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(List<>)) return false;
+        //
+        //     var elementType = type.GetGenericArguments()[0];
+        //     return typeof(IState).IsAssignableFrom(elementType);
+        // }
     }
 }

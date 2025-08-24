@@ -7,58 +7,65 @@ using UnityEngine;
 
 namespace XTools.SM.Silver {
     public interface IState {
-        IState parent { get; }
+        IState parent { get; set; }
         IState activeChild { get; set; }
-        public IReadOnlyList<IActivity> activities { get; }
+        StateMachine machine { get; set; }
+        IReadOnlyList<IActivity> activities { get; }
+
 
         void Enter();
         void Exit();
         void Update(float deltaTime);
         List<IState> GetChildren();
+        void SetupRecursively(StateMachine machine, IState parent = null);
     }
 
     public interface IRootState : IState { }
 
     [Serializable]
-    public abstract class State<TContext, TTarget> : IState where TTarget : IState {
+    public abstract class State<TContext, TTarget> : IState, ISelfValidator where TTarget : IState {
         public IState activeChild { get; set; }
 
         [FoldoutGroup("Base")]
         // [HorizontalGroup("Base/Split", width: 0.25f)]
-        [TabGroup("Base/Tabs", "Other")]
+        [TabGroup("Base/Tabs", "Other", order: 3)]
         [VerticalGroup("Base/Tabs/Other/Vertical")]
         [BoxGroup("Base/Tabs/Other/Vertical/Info")]
-        [ShowInInspector, ReadOnly] readonly State<TContext, TTarget> _parent;
-        public IState parent => _parent;
+        [ShowInInspector] [ReadOnly]
+        public IState parent { get; set; }
+
+        // public IState parent => _parent;
         [BoxGroup("Base/Tabs/Other/Vertical/Info")]
-        [ShowInInspector, ReadOnly] readonly StateMachine _machine;
+        [ShowInInspector] [ReadOnly]
+        public StateMachine machine { get; set; }
+
         [BoxGroup("Base/Tabs/Other/Vertical/Settings")]
         [OdinSerialize] [ValueDropdown("GetObjectOptions")]
-        TTarget _initialState;
+        // [ValidateInput("ValidateInitialIndex")]
+        int _initialStateIndex = -1;
+
         readonly List<IActivity> _activities = new();
+
         public IReadOnlyList<IActivity> activities => _activities;
+
         // [VerticalGroup("Base/Split/Selection")]
-        [TabGroup("Base/Tabs", "Transitions")]
-        [OdinSerialize] [OnValueChanged("SetTransitionsParent")]
-        HashSet<Transition> transitions = new();
+        [TabGroup("Base/Tabs", "Transitions", order: 2)]
+        [SerializeField] [OnValueChanged("SetTransitionsParent")]
+        List<Transition> transitions = new();
+
         // [VerticalGroup("Base/Split/Selection")]
-        [TabGroup("Base/Tabs", "Children")]
-        [OdinSerialize] List<TTarget> children = new();
-        
+        [TabGroup("Base/Tabs", "Children", order: 1)]
+        [OdinSerialize]
+        List<TTarget> children = new();
 
-
-
-        // public State(StateMachine machine, State parent = null) {
-        //     this.machine = machine;
-        //     this.parent = parent;
-        // }
 
         public void AddActivity(IActivity a) {
             if (a != null) _activities.Add(a);
         }
 
-        protected virtual State<TContext, TTarget> GetInitialState() =>
-            null; // Initial child to enter when this state starts (null = this is the leaf)
+        protected virtual IState GetInitialState() => _initialStateIndex >= 0
+            ? children[_initialStateIndex]
+            : null; // Initial child to enter when this state starts (null = this is the leaf)
 
         protected Transition GetTransition() {
             // foreach (var transition in anyTransitions)
@@ -78,7 +85,7 @@ namespace XTools.SM.Silver {
         protected virtual void OnUpdate(float deltaTime) { }
 
         public void Enter() {
-            if (_parent != null) _parent.activeChild = this;
+            if (parent != null) parent.activeChild = this;
             OnEnter();
             var init = GetInitialState();
             if (init != null) init.Enter();
@@ -91,11 +98,11 @@ namespace XTools.SM.Silver {
         }
 
         public void Update(float deltaTime) {
-            var t = GetTransition();
-            if (t != null) {
-                _machine.sequencer.RequestTransition(this, t.to);
-                return;
-            }
+            // var t = GetTransition();
+            // if (t != null) {
+            //     machine.sequencer.RequestTransition(this, t.to);
+            //     return;
+            // }
 
             if (activeChild != null) activeChild.Update(deltaTime);
             OnUpdate(deltaTime);
@@ -118,19 +125,40 @@ namespace XTools.SM.Silver {
 
         // Yields this state and then each ancestor up to the root (self -> parent -> ... -> root)
         public IEnumerable<IState> PathToRoot() {
-            for (var s = this; s != null; s = s._parent) yield return s;
+            for (var s = this as IState; s != null; s = s.parent) yield return s;
+        }
+
+        public void SetupRecursively(StateMachine machine, IState parent = null) {
+            this.machine = machine;
+            this.parent = parent;
+
+            foreach (var child in children) {
+                child.SetupRecursively(machine, this);
+                ;
+            }
         }
 
 
-        IEnumerable<ValueDropdownItem<TTarget>> GetObjectOptions() {
+        IEnumerable<ValueDropdownItem<int>> GetObjectOptions() {
             return children
-                .Where(obj => obj != null)
-                .Select(obj => new ValueDropdownItem<TTarget>(obj.ToString(), obj));
+                .Select((obj, index) => new ValueDropdownItem<int>(
+                    obj != null ? obj.ToString() : "NULL",
+                    index))
+                .Prepend(new ValueDropdownItem<int>("None", -1));
         }
 
         void SetTransitionsParent() {
             Debug.Log(GetChildren());
             foreach (var transition in transitions) transition.SetParent(this);
+        }
+
+        // bool ValidateInitialIndex() {
+        //     return _initialStateIndex >= children.Count - 1;
+        // }
+
+        public void Validate(SelfValidationResult result) {
+            if (_initialStateIndex >= children.Count)
+                result.AddError("Initial state index is out of range").WithFix(() => _initialStateIndex = -1);
         }
     }
 }

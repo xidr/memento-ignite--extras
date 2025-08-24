@@ -25,13 +25,13 @@ namespace XTools.SM.Silver {
     
     [Serializable]
     public class Transition {
-        [OdinSerialize, ValueDropdown("GetObjectOptions")]
-        IState _from;
-        public IState from => _from; 
-        
-        [OdinSerialize, ValueDropdown("GetObjectOptions")]
-        IState _to;
-        public IState to => _to;  
+        // [OdinSerialize, ValueDropdown("GetObjectOptions")]
+        // IState _from;
+        // public IState from => _from; 
+        //
+        // [OdinSerialize, ValueDropdown("GetObjectOptions")]
+        // IState _to;
+        // public IState to => _to;  
         
         [OdinSerialize]
         public readonly IPredicate condition;
@@ -58,7 +58,7 @@ namespace XTools.SM.Silver {
             // }
 
             // Check if the condition variable is an IPredicate and call the Evaluate method if it is not null
-            if (_parentState.activeChild != _from) return false;
+            // if (_parentState.activeChild != _from) return false;
             
             var result = condition?.Evaluate();
             if (result.HasValue) return result.Value;
