@@ -19,12 +19,14 @@ namespace XTools.SM.Silver {
         public void RequestTransition(IState from, IState to) {
             // machine.ChangeState(from, to);
             if (to == null || from == null) return;
-            if (_sequencer != null) {
-                _pending = (from, to);
-                return;
-            }
+            // if (_sequencer != null) {
+            //     _pending = (from, to);
+            //     return;
+            // }
+            //
+            // BeginTransition(from, to);
 
-            BeginTransition(from, to);
+            machine.ChangeState(from, to);
         }
 
         static List<PhaseStep> GatherPhaseSteps(List<IState> chain, bool deactivate) {

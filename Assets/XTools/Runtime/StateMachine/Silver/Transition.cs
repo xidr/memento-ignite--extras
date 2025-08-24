@@ -24,14 +24,14 @@ namespace XTools.SM.Silver {
     }
     
     [Serializable]
-    public class Transition {
-        // [OdinSerialize, ValueDropdown("GetObjectOptions")]
-        // IState _from;
-        // public IState from => _from; 
-        //
-        // [OdinSerialize, ValueDropdown("GetObjectOptions")]
-        // IState _to;
-        // public IState to => _to;  
+    public class Transition : ISelfValidator{
+        [OdinSerialize, ValueDropdown("GetObjectOptions")]
+        int _from;
+        public int from => _from; 
+        
+        [OdinSerialize, ValueDropdown("GetObjectOptions")]
+        int _to;
+        public int to => _to;  
         
         [OdinSerialize]
         public readonly IPredicate condition;
@@ -43,6 +43,14 @@ namespace XTools.SM.Silver {
         //     _to = to;
         //     this.condition = condition;
         // }
+
+        public void Enable() {
+            condition.Enable();
+        }
+        
+        public void Disable() {
+            condition.Disable();
+        }
 
         public bool Evaluate() {
             // Check if the condition variable is a Func<bool> and call the Invoke method if it is not null
@@ -58,7 +66,7 @@ namespace XTools.SM.Silver {
             // }
 
             // Check if the condition variable is an IPredicate and call the Evaluate method if it is not null
-            // if (_parentState.activeChild != _from) return false;
+            if (_parentState.activeChild != _parentState.GetChildren()[_from]) return false;
             
             var result = condition?.Evaluate();
             if (result.HasValue) return result.Value;
@@ -71,11 +79,20 @@ namespace XTools.SM.Silver {
             _parentState = parent;
         }
         
-        IEnumerable<ValueDropdownItem<IState>> GetObjectOptions() {
+        IEnumerable<ValueDropdownItem<int>> GetObjectOptions() {
             
             return _parentState.GetChildren()
-                .Where(obj => obj != null)
-                .Select(obj => new ValueDropdownItem<IState>(obj.ToString(), obj));
+                .Select((obj, index) => new ValueDropdownItem<int>(
+                    obj != null ? obj.ToString() : "NULL",
+                    index))
+                .Prepend(new ValueDropdownItem<int>("None", -1));
+        }
+        
+        public void Validate(SelfValidationResult result) {
+            if (_from >= _parentState.GetChildren().Count || _to >= _parentState.GetChildren().Count)
+                result.AddError("Target states' indices are out of range");
+            if (_to == _from)
+                result.AddError("Incorrect target states");
         }
     }
 }

@@ -1219,6 +1219,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
+    - Name: _debug
+      Entry: 5
+      Data: true
     - Name: _root
       Entry: 7
       Data: 0|MIE.GameRootState, Assembly-CSharp
@@ -1257,16 +1260,46 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 5|XTools.SM.Silver.Transition, XTools
+    - Name: _from
+      Entry: 3
+      Data: 0
+    - Name: _to
+      Entry: 3
+      Data: 1
     - Name: condition
       Entry: 7
       Data: 6|XTools.SM.Silver.ActionPredicateUIButtonPressed, XTools
     - Name: _referenceObject
       Entry: 3
       Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _parentState
+      Entry: 9
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|XTools.SM.Silver.Transition, XTools
+    - Name: _from
+      Entry: 3
+      Data: 1
+    - Name: _to
+      Entry: 3
+      Data: 0
+    - Name: condition
+      Entry: 7
+      Data: 8|XTools.SM.Silver.ActionPredicateUIButtonPressed, XTools
+    - Name: _referenceObject
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -1284,60 +1317,29 @@ MonoBehaviour:
       Data: 
     - Name: children
       Entry: 7
-      Data: 7|System.Collections.Generic.List`1[[MIE.GameStateBase, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 3
-    - Name: 
-      Entry: 7
-      Data: 8|MIE.MainViewState, Assembly-CSharp
-    - Name: _initialStateIndex
-      Entry: 3
-      Data: -1
-    - Name: transitions
-      Entry: 6
-      Data: 
-    - Name: children
-      Entry: 7
       Data: 9|System.Collections.Generic.List`1[[MIE.GameStateBase, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: _views
-      Entry: 7
-      Data: 10|System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+      Data: 2
     - Name: 
       Entry: 7
-      Data: 11|MIE.SettingsViewState, Assembly-CSharp
+      Data: 10|MIE.MainViewState, Assembly-CSharp
     - Name: _initialStateIndex
       Entry: 3
       Data: -1
     - Name: transitions
-      Entry: 6
+      Entry: 7
+      Data: 11|System.Collections.Generic.List`1[[XTools.SM.Silver.Transition, XTools]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: children
       Entry: 7
@@ -1361,7 +1363,7 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 10
-      Data: 1
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
@@ -1409,7 +1411,10 @@ MonoBehaviour:
         mscorlib
     - Name: 
       Entry: 12
-      Data: 0
+      Data: 1
+    - Name: 
+      Entry: 10
+      Data: 1
     - Name: 
       Entry: 13
       Data: 
@@ -1448,11 +1453,21 @@ MonoBehaviour:
       Entry: 3
       Data: -1
     - Name: transitions
-      Entry: 6
+      Entry: 7
+      Data: 20|System.Collections.Generic.List`1[[XTools.SM.Silver.Transition, XTools]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
       Data: 
     - Name: children
       Entry: 7
-      Data: 20|System.Collections.Generic.List`1[[MIE.GameStateBase, Assembly-CSharp]],
+      Data: 21|System.Collections.Generic.List`1[[MIE.GameStateBase, Assembly-CSharp]],
         mscorlib
     - Name: 
       Entry: 12
@@ -1465,7 +1480,7 @@ MonoBehaviour:
       Data: 
     - Name: _views
       Entry: 7
-      Data: 21|System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]],
+      Data: 22|System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule]],
         mscorlib
     - Name: 
       Entry: 12

@@ -18,6 +18,8 @@ namespace XTools.SM.Silver {
         void Update(float deltaTime);
         List<IState> GetChildren();
         void SetupRecursively(StateMachine machine, IState parent = null);
+        IEnumerable<IState> PathToRoot();
+        IState Leaf();
     }
 
     public interface IRootState : IState { }
@@ -86,6 +88,9 @@ namespace XTools.SM.Silver {
 
         public void Enter() {
             if (parent != null) parent.activeChild = this;
+            foreach (var transition in transitions) {
+                transition.Enable();
+            }
             OnEnter();
             var init = GetInitialState();
             if (init != null) init.Enter();
@@ -94,15 +99,18 @@ namespace XTools.SM.Silver {
         public void Exit() {
             if (activeChild != null) activeChild.Exit();
             activeChild = null;
+            foreach (var transition in transitions) {
+                transition.Disable();
+            }
             OnExit();
         }
 
         public void Update(float deltaTime) {
-            // var t = GetTransition();
-            // if (t != null) {
-            //     machine.sequencer.RequestTransition(this, t.to);
-            //     return;
-            // }
+            var t = GetTransition();
+            if (t != null) {
+                machine.sequencer.RequestTransition(children[t.from], children[t.to]);
+                return;
+            }
 
             if (activeChild != null) activeChild.Update(deltaTime);
             OnUpdate(deltaTime);
@@ -159,6 +167,8 @@ namespace XTools.SM.Silver {
         public void Validate(SelfValidationResult result) {
             if (_initialStateIndex >= children.Count)
                 result.AddError("Initial state index is out of range").WithFix(() => _initialStateIndex = -1);
+            if(transitions == null)
+                result.AddError("Transitions is null").WithFix(() => transitions = new());
         }
     }
 }

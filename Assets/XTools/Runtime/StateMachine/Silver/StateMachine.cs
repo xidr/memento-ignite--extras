@@ -1,12 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
 
 namespace XTools.SM.Silver {
     public class StateMachine : SerializedMonoBehaviour {
+        [OdinSerialize]
+        bool _debug;
+        
+        [ShowIf("_debug")]
+        [ShowInInspector, ReadOnly]
+        string _statePath;
+        
         public TransitionSequencer sequencer { get; private set; }
 
         [NonSerialized, OdinSerialize] IRootState _root;
@@ -39,6 +47,7 @@ namespace XTools.SM.Silver {
 
         // Perform the actual switch from 'from' to 'to' by exiting up to the shared ancestor, then entering down to the target
         public void ChangeState(IState from, IState to) {
+            
             if (from == to || from == null || to == null) return;
 
             var lca = TransitionSequencer.Lca(from, to);
@@ -50,6 +59,9 @@ namespace XTools.SM.Silver {
             var stack = new Stack<IState>();
             for (var s = to; s != lca; s = s.parent) stack.Push(s);
             while (stack.Count > 0) stack.Pop().Enter();
+            
+            if (_debug)
+                _statePath = StatePath(_root.Leaf());
         }
 
         // void Wire(IState s, StateMachine m, HashSet<IState> visited, IState parent = null) {
@@ -91,5 +103,9 @@ namespace XTools.SM.Silver {
         //     var elementType = type.GetGenericArguments()[0];
         //     return typeof(IState).IsAssignableFrom(elementType);
         // }
+        
+        static string StatePath(IState state) {
+            return string.Join(" > ", state.PathToRoot().Reverse().Select(x => x.GetType().Name));
+        }
     }
 }
