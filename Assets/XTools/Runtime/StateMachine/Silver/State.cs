@@ -14,23 +14,26 @@ namespace XTools.SM.Silver {
         void Enter();
         void Exit();
         void Update(float deltaTime);
+        List<IState> GetChildren();
     }
     
     [Serializable]
-    public abstract class State<TContext, TTarget> : IState{
-        
-
-        
+    public abstract class State<TContext, TTarget> : IState where TTarget : IState{
         
         public IState activeChild { get; set; }
+        
+
         
         [ShowInInspector, ReadOnly] readonly State<TContext, TTarget> _parent;
         public IState parent => _parent;
         [ShowInInspector, ReadOnly] readonly StateMachine _machine;
         readonly List<IActivity> _activities = new();
         public IReadOnlyList<IActivity> activities => _activities;
+        
+        [OdinSerialize, OnValueChanged("SetTransitionsParent")]
+        HashSet<Transition> transitions = new();
         [OdinSerialize] List<TTarget> children = new();
-        [ValueDropdown("GetObjectOptions")]
+        [OdinSerialize, ValueDropdown("GetObjectOptions")]
         TTarget _initialState;
         
 
@@ -46,8 +49,17 @@ namespace XTools.SM.Silver {
         protected virtual State<TContext, TTarget> GetInitialState() =>
             null; // Initial child to enter when this state starts (null = this is the leaf)
 
-        protected virtual State<TContext, TTarget> GetTransition() =>
-            null; // Target state to switch to this frame (null = stay in the current state)
+        protected Transition GetTransition() {
+            // foreach (var transition in anyTransitions)
+            //     if (transition.Evaluate())
+            //         return transition;
+
+            foreach (var transition in transitions) {
+                if (transition.Evaluate()) return transition;
+            }
+
+            return null;
+        } // Target state to switch to this frame (null = stay in the current state)
 
         // Lifecycle hooks
         protected virtual void OnEnter() { }
@@ -70,12 +82,20 @@ namespace XTools.SM.Silver {
         public void Update(float deltaTime) {
             var t = GetTransition();
             if (t != null) {
-                _machine.sequencer.RequestTransition(this, t);
+                _machine.sequencer.RequestTransition(this, t.to);
                 return;
             }
 
             if (activeChild != null) activeChild.Update(deltaTime);
             OnUpdate(deltaTime);
+        }
+
+        public List<IState> GetChildren() {
+            List<IState> trueChildren = new();
+            foreach (var child in children) {
+                if (child != null) trueChildren.Add(child);
+            }
+            return trueChildren;
         }
 
         // Returns the deepest currently-active descendant state (the leaf of the active path)
@@ -96,6 +116,13 @@ namespace XTools.SM.Silver {
             return children
                 .Where(obj => obj != null)
                 .Select(obj => new ValueDropdownItem<TTarget>(obj.ToString(), obj));
+        }
+
+        void SetTransitionsParent() {
+            Debug.Log(GetChildren());
+            foreach (var transition in transitions) {
+                transition.SetParent(this);
+            }
         }
     }
 }
