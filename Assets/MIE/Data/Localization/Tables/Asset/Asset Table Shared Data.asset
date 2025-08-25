@@ -14,9 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
   m_TableCollectionName: Asset Table
   m_TableCollectionNameGuidString: d48008310c9324feb9698ae1205312e4
-  m_Entries: []
+  m_Entries:
+  - m_Id: 16313518170112
+    m_Key: testText
+    m_Metadata:
+      m_Items: []
   m_Metadata:
-    m_Items: []
+    m_Items:
+    - rid: 8851776170837672168
   m_KeyGenerator:
     rid: 8851776170837672159
   references:
@@ -26,3 +31,13 @@ MonoBehaviour:
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
         m_CustomEpoch: 1756139256843
+    - rid: 8851776170837672168
+      type: {class: AssetTypeMetadata, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries:
+        - m_KeyId: 16313518170112
+          m_TableCodes:
+          - ru
+          - en
+        m_TypeString: UnityEngine.TextAsset, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
