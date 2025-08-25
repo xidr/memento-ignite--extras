@@ -53,12 +53,12 @@ namespace XTools.SM.Silver {
         // [VerticalGroup("Base/Split/Selection")]
         [TabGroup("Base/Tabs", "Transitions", order: 2)]
         [SerializeField] [OnValueChanged("SetTransitionsParent")]
-        List<Transition> transitions = new();
+        List<Transition> _transitions = new();
 
         // [VerticalGroup("Base/Split/Selection")]
         [TabGroup("Base/Tabs", "Children", order: 1)]
         [OdinSerialize]
-        List<TTarget> children = new();
+        List<TTarget> _children = new();
 
 
         public void AddActivity(IActivity a) {
@@ -66,7 +66,7 @@ namespace XTools.SM.Silver {
         }
 
         protected virtual IState GetInitialState() => _initialStateIndex >= 0
-            ? children[_initialStateIndex]
+            ? _children[_initialStateIndex]
             : null; // Initial child to enter when this state starts (null = this is the leaf)
 
         protected Transition GetTransition() {
@@ -74,7 +74,7 @@ namespace XTools.SM.Silver {
             //     if (transition.Evaluate())
             //         return transition;
 
-            foreach (var transition in transitions)
+            foreach (var transition in _transitions)
                 if (transition.Evaluate())
                     return transition;
 
@@ -88,7 +88,7 @@ namespace XTools.SM.Silver {
 
         public void Enter() {
             if (parent != null) parent.activeChild = this;
-            foreach (var transition in transitions) {
+            foreach (var transition in _transitions) {
                 transition.Enable();
             }
             OnEnter();
@@ -99,7 +99,7 @@ namespace XTools.SM.Silver {
         public void Exit() {
             if (activeChild != null) activeChild.Exit();
             activeChild = null;
-            foreach (var transition in transitions) {
+            foreach (var transition in _transitions) {
                 transition.Disable();
             }
             OnExit();
@@ -108,7 +108,7 @@ namespace XTools.SM.Silver {
         public void Update(float deltaTime) {
             var t = GetTransition();
             if (t != null) {
-                machine.sequencer.RequestTransition(children[t.from], children[t.to]);
+                machine.sequencer.RequestTransition(_children[t.from], _children[t.to]);
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace XTools.SM.Silver {
 
         public List<IState> GetChildren() {
             List<IState> trueChildren = new();
-            foreach (var child in children)
+            foreach (var child in _children)
                 if (child != null)
                     trueChildren.Add(child);
             return trueChildren;
@@ -140,7 +140,7 @@ namespace XTools.SM.Silver {
             this.machine = machine;
             this.parent = parent;
 
-            foreach (var child in children) {
+            foreach (var child in _children) {
                 child.SetupRecursively(machine, this);
                 ;
             }
@@ -148,7 +148,7 @@ namespace XTools.SM.Silver {
 
 
         IEnumerable<ValueDropdownItem<int>> GetObjectOptions() {
-            return children
+            return _children
                 .Select((obj, index) => new ValueDropdownItem<int>(
                     obj != null ? obj.ToString() : "NULL",
                     index))
@@ -157,7 +157,7 @@ namespace XTools.SM.Silver {
 
         void SetTransitionsParent() {
             Debug.Log(GetChildren());
-            foreach (var transition in transitions) transition.SetParent(this);
+            foreach (var transition in _transitions) transition.SetParent(this);
         }
 
         // bool ValidateInitialIndex() {
@@ -165,10 +165,10 @@ namespace XTools.SM.Silver {
         // }
 
         public void Validate(SelfValidationResult result) {
-            if (_initialStateIndex >= children.Count)
+            if (_initialStateIndex >= _children.Count)
                 result.AddError("Initial state index is out of range").WithFix(() => _initialStateIndex = -1);
-            if(transitions == null)
-                result.AddError("Transitions is null").WithFix(() => transitions = new());
+            if(_transitions == null)
+                result.AddError("Transitions is null").WithFix(() => _transitions = new());
         }
     }
 }
