@@ -2,18 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace XTools {
     public abstract class DataManagerBase : IDisposable {
+        const string GAME_DATA_GROUP_LABEL = "GameData";
+        
         List<ScriptableObject> _data = new();
 
         EventBinding<UIAudioSliderChanged> _uiAudioSliderChangedBinding;
 
         public DataManagerBase() {
-            ScriptableObject[] loaded = Resources.LoadAll<ScriptableObject>("GameData");
+            // ScriptableObject[] loaded = Resources.LoadAll<ScriptableObject>("GameData");
+            //
+            // _data.AddRange(loaded);
+            
+            // Load the entire GameData group synchronously
 
-            _data.AddRange(loaded);
 
+            // // Don't forget to release
+            // Addressables.Release(handle);
+
+            
             // ServiceLocator.Global.Register(typeof(IVisitorDataSupplier), this);
 
             _uiAudioSliderChangedBinding = new EventBinding<UIAudioSliderChanged>(UiAudioSliderChanged);
@@ -26,6 +36,18 @@ namespace XTools {
 
         public void Dispose() {
             EventBus<UIAudioSliderChanged>.Deregister(_uiAudioSliderChangedBinding);
+        }
+
+        void LoadDataClasses() {
+            var handle = Addressables.LoadAssetsAsync<ScriptableObject>(GAME_DATA_GROUP_LABEL, null);
+            var loaded = handle.WaitForCompletion();
+            
+            _data.AddRange(loaded);
+            
+            
+            
+            handle.Release();
+            
         }
 
         public virtual T GetData<T>() where T : ScriptableObject {
