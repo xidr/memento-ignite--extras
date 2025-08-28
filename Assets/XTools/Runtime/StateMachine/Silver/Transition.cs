@@ -24,7 +24,7 @@ namespace XTools.SM.Silver {
     }
     
     [Serializable]
-    public class Transition : ISelfValidator{
+    public class Transition{
         [OdinSerialize, ValueDropdown("GetObjectOptions")]
         int _from;
         public int from => _from; 
@@ -88,11 +88,13 @@ namespace XTools.SM.Silver {
                 .Prepend(new ValueDropdownItem<int>("None", -1));
         }
         
-        public void Validate(SelfValidationResult result) {
+        public List<string> GetValidationData() {
+            var result = new List<string>();
             if (_from >= _parentState.GetChildren().Count || _to >= _parentState.GetChildren().Count)
-                result.AddError("Target states' indices are out of range");
+                result.Add("Target states' indices are out of range");
             if (_to == _from)
-                result.AddError("Incorrect target states");
+                result.Add("Incorrect target states");
+            return result;
         }
     }
 }

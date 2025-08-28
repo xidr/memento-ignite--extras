@@ -22,5 +22,9 @@ namespace MIE {
         }
 
 
+        public void Check(string stateName) {
+            Debug.Log(stateName);
+        }
+
     }
 }

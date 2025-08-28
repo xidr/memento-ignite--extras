@@ -26,7 +26,7 @@ public class SerializedFieldsValidator : ValueValidator<IValidatableSerializedFi
             var value = field.GetValue(Value);
 
             if (value == null)
-                result.AddError($"Serialized Field: {field.Name} in Type: {field.FieldType.Name} is null");
+                result.AddError($"Serialized Field: {field.Name} of Type: {field.FieldType.Name} is null");
         }
     }
 

@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 1434321088, guid: afbf832bc46149f5a291e87cab63e46d, type: 3}
   m_Name: RuleConfig
   m_EditorClassIdentifier: 
-  projectRules: []
+  projectRules:
+  - Enabled: 1
+    EnabledOverridden: 1
+    Type: Sirenix.OdinInspector.Modules.Addressables.Editor.CheckDuplicateBundleDependenciesValidator,
+      Sirenix.OdinInspector.Modules.Unity.Addressables
+    Override: "{\n    \"$id\": 0,\n    \"$type\": \"0|Sirenix.OdinInspector.Modules.Addressables.Editor.CheckDuplicateBundleDependenciesValidator,
+      Sirenix.OdinInspector.Modules.Unity.Addressables\",\n    \"ValidatorSeverity\":
+      1,\n    \"IgnoredGUIDs\": {\n        \"$id\": 1,\n        \"$type\": \"1|System.Collections.Generic.List`1[[System.String,
+      mscorlib]], mscorlib\",\n        \"$rlength\": 3,\n        \"$rcontent\": [\n           
+      \"3d377fb560f381342aa350b129fd29e0\",\n            \"bfed9aba51cb20241bde539544f81a7a\",\n           
+      \"d3a4457ae8c25bb4d981e8994608014f\"\n        ]\n    }\n}"

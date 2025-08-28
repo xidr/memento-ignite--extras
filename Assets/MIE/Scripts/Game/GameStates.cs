@@ -11,6 +11,7 @@ namespace MIE {
         protected override void OnEnter() {
             base.OnEnter();
             _views.ForEach(view => view.SetActive(true));
+            _context.Check(GetType().ToString());
         }
 
         protected override void OnExit() {
@@ -21,7 +22,7 @@ namespace MIE {
 
 
     [Serializable]
-    public class GameRootState : State<object, GameStateBase>, IRootState { }
+    public class GameRootState : State<SceneManager, GameStateBase>, IRootState { }
 
     // --- Main Menu States ---
 

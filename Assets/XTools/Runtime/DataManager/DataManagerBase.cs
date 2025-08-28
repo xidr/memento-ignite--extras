@@ -26,6 +26,8 @@ namespace XTools {
             
             // ServiceLocator.Global.Register(typeof(IVisitorDataSupplier), this);
 
+            LoadDataClasses();
+
             _uiAudioSliderChangedBinding = new EventBinding<UIAudioSliderChanged>(UiAudioSliderChanged);
             EventBus<UIAudioSliderChanged>.Register(_uiAudioSliderChangedBinding);
         }

@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using UnityEngine;
+using Object = System.Object;
 
 namespace XTools.SM.Silver {
     public interface IState {
+
         IState parent { get; set; }
         IState activeChild { get; set; }
         StateMachine machine { get; set; }
@@ -17,15 +18,17 @@ namespace XTools.SM.Silver {
         void Exit();
         void Update(float deltaTime);
         List<IState> GetChildren();
-        void SetupRecursively(StateMachine machine, IState parent = null);
+        void SetupRecursively(StateMachine machine, IState parent = null, Object context = null);
         IEnumerable<IState> PathToRoot();
         IState Leaf();
+
     }
 
     public interface IRootState : IState { }
 
     [Serializable]
     public abstract class State<TContext, TTarget> : IState, ISelfValidator where TTarget : IState {
+
         public IState activeChild { get; set; }
 
         [FoldoutGroup("Base")]
@@ -42,7 +45,7 @@ namespace XTools.SM.Silver {
         public StateMachine machine { get; set; }
 
         [BoxGroup("Base/Tabs/Other/Vertical/Settings")]
-        [OdinSerialize] [ValueDropdown("GetObjectOptions")]
+        [SerializeField] [ValueDropdown("GetObjectOptions")]
         // [ValidateInput("ValidateInitialIndex")]
         int _initialStateIndex = -1;
 
@@ -57,8 +60,13 @@ namespace XTools.SM.Silver {
 
         // [VerticalGroup("Base/Split/Selection")]
         [TabGroup("Base/Tabs", "Children", order: 1)]
-        [OdinSerialize]
+        [SerializeField]
         List<TTarget> _children = new();
+
+        [SerializeField]
+        [ShowIf("_isRoot")]
+        protected TContext _context;
+        bool _isRoot => this is IRootState;
 
 
         public void AddActivity(IActivity a) {
@@ -86,11 +94,18 @@ namespace XTools.SM.Silver {
         protected virtual void OnExit() { }
         protected virtual void OnUpdate(float deltaTime) { }
 
+        public void SetupRecursively(StateMachine machine, IState parent = null, Object context = null) {
+            this.machine = machine;
+            this.parent = parent;
+
+            if (context != null && context is TContext ctx) _context = ctx;
+
+            foreach (var child in _children) child.SetupRecursively(machine, this, _context);
+        }
+
         public void Enter() {
             if (parent != null) parent.activeChild = this;
-            foreach (var transition in _transitions) {
-                transition.Enable();
-            }
+            foreach (var transition in _transitions) transition.Enable();
             OnEnter();
             var init = GetInitialState();
             if (init != null) init.Enter();
@@ -99,9 +114,7 @@ namespace XTools.SM.Silver {
         public void Exit() {
             if (activeChild != null) activeChild.Exit();
             activeChild = null;
-            foreach (var transition in _transitions) {
-                transition.Disable();
-            }
+            foreach (var transition in _transitions) transition.Disable();
             OnExit();
         }
 
@@ -124,6 +137,7 @@ namespace XTools.SM.Silver {
             return trueChildren;
         }
 
+
         // Returns the deepest currently-active descendant state (the leaf of the active path)
         public IState Leaf() {
             IState s = this;
@@ -134,16 +148,6 @@ namespace XTools.SM.Silver {
         // Yields this state and then each ancestor up to the root (self -> parent -> ... -> root)
         public IEnumerable<IState> PathToRoot() {
             for (var s = this as IState; s != null; s = s.parent) yield return s;
-        }
-
-        public void SetupRecursively(StateMachine machine, IState parent = null) {
-            this.machine = machine;
-            this.parent = parent;
-
-            foreach (var child in _children) {
-                child.SetupRecursively(machine, this);
-                ;
-            }
         }
 
 
@@ -167,8 +171,16 @@ namespace XTools.SM.Silver {
         public void Validate(SelfValidationResult result) {
             if (_initialStateIndex >= _children.Count)
                 result.AddError("Initial state index is out of range").WithFix(() => _initialStateIndex = -1);
-            if(_transitions == null)
-                result.AddError("Transitions is null").WithFix(() => _transitions = new());
+            if (_transitions == null)
+                result.AddError("Transitions is null").WithFix(() => _transitions = new List<Transition>());
+            if (_isRoot && _context == null) result.AddError($"Context in {GetType()} state is null");
+
+            
+            foreach (var transition in _transitions) {
+                var validationData = transition.GetValidationData();
+                if (validationData.Count > 0) validationData.ForEach(x => result.AddError(x));
+            }
         }
+
     }
 }
