@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5d17a21594effb4e9591490b009e7aa, type: 3}
-  m_Name: Localization-Locales_BundledAssetGroupSchema
+  m_Name: unifiedraytracing_BundledAssetGroupSchema
   m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.GroupSchemas.BundledAssetGroupSchema
-  m_Group: {fileID: 11400000, guid: 345d5b67ff5df25c8bc2086acf0dadd3, type: 2}
+  m_Group: {fileID: 11400000, guid: 781dbc26ed4e08264b4579a5f717b5e9, type: 2}
   m_InternalBundleIdMode: 1
   m_Compression: 1
   m_IncludeAddressInCatalog: 1
@@ -35,14 +35,14 @@ MonoBehaviour:
   m_RedirectLimit: -1
   m_RetryCount: 0
   m_BuildPath:
-    m_Id: 788f1f2ca249b03bcba7cf9101cb7d0e
+    m_Id: 951924e69b8be4d1c81c0a7d7bc91a53
   m_LoadPath:
-    m_Id: d455fada61e2ae24da39f38b68f8555e
+    m_Id: 30b031f4829f0f72bb2ff86f9fc82ffc
   m_BundleMode: 0
   m_AssetBundleProviderType:
     m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_ClassName: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
   m_UseDefaultSchemaSettings: 0
   m_SelectedPathPairIndex: 0
-  m_BundleNaming: 1
+  m_BundleNaming: 0
   m_AssetLoadMode: 0
